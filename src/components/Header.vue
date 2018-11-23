@@ -2,12 +2,12 @@
 	<div>
 		<h1>We Robot</h1>
 		<h2>Administration</h2>
-		<div class="container-fluid">
+		<div class="container-fluid" style="margin-bottom: 7em;">
 			<div class="row">
 				<div class="col-sm-3"></div>
 				<div class="col-sm-6">
-					<button class="btn btn-lg menuBtn " id="articles" @click='goToArticles'>Articles</button>
-					<button class="btn btn-lg menuBtn " id="messages" @click='goToMessages'>Messages</button>
+					<button :class="{selected : artSelected, menuBtn : !artSelected}" class="btn-lg" id="articles" @click='goTo("articles")'>Articles</button>
+					<button :class="{selected : msgSelected, menuBtn : !msgSelected}" class="btn-lg" id="messages" @click='goTo("messages")'>Messages</button>
 				</div>
 				<div class="col-sm-3"></div>
 			</div>
@@ -16,6 +16,13 @@
 </template>
 
 <style scoped>
+.selected {
+	width: 50%;
+	background-color: #ffffff;
+	color: #2980b9;
+	border-style: solid;
+	border-color: #2980b9;
+}
 .menuBtn {
 	width: 50%;
 	background-color: #2980b9;
@@ -23,8 +30,10 @@
 	border-style: solid;
 	border-color: #2980b9;
 }
-.menuBtn:hover, .selected {
-	background-color:#85abc5;
+.menuBtn:hover, .selected:hover {
+	background-color:#abcfe7;
+	border-color: #507b97;
+	color: #2980b9;
 }
 #articles {
 	border-radius: 10px 0px 0px 10px;
@@ -54,15 +63,24 @@ import router from '../router.js';
 import store from '../store.js';
 export default {
 	methods: {
-		goToArticles () {
-			router.push("/articles")
-		},
-		goToMessages () {
-			router.push("/messages")
+		goTo (page) {
+			router.push(page)
 		}
 	},
 	mounted () {
-		store.commit("setSelected")
+		var s = this.$store
+		var ss = this.$store.state
+		if (document.URL.includes("articles")) {
+			this.artSelected = true
+		}else {
+			this.msgSelected = true
+		}
+	},
+	data () {
+		return {
+			artSelected: false,
+			msgSelected: false
+		}
 	}
 }
 </script>

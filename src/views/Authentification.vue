@@ -1,22 +1,19 @@
 <template>
 	<div>
 		<h1>We Robot</h1>
-		<h2>Administration</h2>
-		<p v-show="notAauthentified">Erreur d'authentification...</p>		
+		<h2>Administration</h2>		
 	</div>
 </template>
 
 <script>
 import store from '../store.js'
 export default {
-	mounted () {
-		this.notAauthentified = store.commit("Auth")
-	},
-	data () {
-		return {
-			notAauthentified: false
-		}
-	}
+  mounted () {
+	this.$store.commit("pass")
+  },
+  data () {
+	return {}
+  }
 }
 </script>
 
@@ -43,9 +40,5 @@ h2{
 	font-size: 2em;
 	color: #ffffff;
 	font-weight: bold;
-}
-p {
-	color: red;
-	font-size: 2em;
 }
 </style>

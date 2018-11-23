@@ -6,54 +6,50 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    lastPage: '',
-    authentified : false
+    page: "",
+    articles: [],
+    messages: []
   },
   mutations: {
-    setSelected() {
-      if (this.lastPage == "articles") {
-        var id = "messages"
-      }else {
-        var id = "articles"
+    pass: () => {
+      localStorage.setItem("haveAuth", true)
+      if (localStorage.getItem("mustChangePass")) {
+        localStorage.clear()
       }
-      document.getElementById(id).style.backgroundColor = "white"
-      document.getElementById(id).style.color = "#2980b9"
-    },
-    goToBeginPage () {
-      this.authentified = true
-      router.push("/")
-    },
-    Auth () {
-      if (localStorage.getItem("password") === null || localStorage.getItem("password") === undefined) {
+      if (localStorage.getItem("password") === null) {
         var url_string = window.location.href
         var url = new URL(url_string)
         if (url.searchParams.get("password") != null) {
           localStorage.setItem("password", url.searchParams.get("password"));
         }
-        if (localStorage.getItem("password") === null || localStorage.getItem("password") === undefined) {
+        if (localStorage.getItem("password") === null) {
           localStorage.setItem("password", prompt("Mot de Passe:"))
         }
       }
-      this.commit("verifyPass")
+      if (localStorage.getItem("lastPage") == undefined || localStorage.getItem("password") == null){
+        localStorage.setItem("lastPage", "articles")
+      }
+      router.push("/" + localStorage.getItem("lastPage"))
     },
-    verifyPass () {
-      axios.get('https://api.werobot.fr/message/', {
+    getArts: function () {
+      axios.get('https://api.werobot.fr/post'
+      ).then((res) => {
+        this.state.articles = res.data.data.posts;
+        })
+    },
+    getMsgs: function () {
+      axios.get('https://api.werobot.fr/message', {
         headers: {
-          'Authorization': "Bearer " + localStorage["password"]
+          'Authorization': 'Bearer ' + localStorage["password"]
         }
       }).then((response) => {
-        if (response.data.data == undefined) {
-          if (localStorage["lastPage"] != undefined) {
-            this.lastPage = localStorage["lastPage"]
-          } else {
-            this.lastPage = "articles"
+        console.log(response.data)
+        this.state.messages = response.data.data.messages;
+        }).catch(function (error) {
+          if ( error.response.status == 401) {
+            localStorage.clear()
           }
-        } else {
-          router.push("/" + this.lastPage)
-        }
-        return (response.data.success)
-      })
+        });
     }
-  },
-  actions: {}
-});
+  }
+})
