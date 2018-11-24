@@ -34,6 +34,7 @@
 	background-color:#abcfe7;
 	border-color: #507b97;
 	color: #2980b9;
+	cursor: pointer;
 }
 #articles {
 	border-radius: 10px 0px 0px 10px;

@@ -8,7 +8,8 @@ export default new Vuex.Store({
   state: {
     page: "",
     articles: [],
-    messages: []
+    messages: [],
+    noMsgs: false
   },
   mutations: {
     pass: () => {
@@ -43,8 +44,13 @@ export default new Vuex.Store({
           'Authorization': 'Bearer ' + localStorage["password"]
         }
       }).then((response) => {
-        console.log(response.data)
         this.state.messages = response.data.data.messages;
+        if (response.data.data.messages[0] == undefined) {
+          console.log("noMsg")
+          this.state.noMsgs = true
+        }else {
+          console.log("Msg")
+        }
         }).catch(function (error) {
           if ( error.response.status == 401) {
             localStorage.clear()
